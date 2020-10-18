@@ -4,9 +4,9 @@ server:
 
 spring:
   datasource:
-    username: ${db.username}
-    password: ${db.password}
-    url: jdbc:mysql://localhost:3306/photoalbum
+    username: root
+    password: toor
+    url: jdbc:mysql://localhost:3306/photodb
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
