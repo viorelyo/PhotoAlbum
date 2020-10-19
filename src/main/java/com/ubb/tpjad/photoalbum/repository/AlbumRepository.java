@@ -7,4 +7,5 @@ import java.util.List;
 public interface AlbumRepository {
 
     List<Album> getAlbums();
+    Album getAlbumById(int id);
 }
