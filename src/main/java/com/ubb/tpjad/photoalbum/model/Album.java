@@ -14,7 +14,6 @@ import javax.persistence.*;
 public class Album {
     @Id
     @GeneratedValue
-    @NonNull
     private int id;
 
     @Column(unique = true)

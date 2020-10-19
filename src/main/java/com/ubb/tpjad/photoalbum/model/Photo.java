@@ -15,7 +15,6 @@ import java.sql.Date;
 public class Photo {
     @Id
     @GeneratedValue
-    @NonNull
     private int id;
 
     @ManyToOne
