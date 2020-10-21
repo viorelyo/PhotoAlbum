@@ -10,7 +10,7 @@ create table Photo (
     albumId int not null,
     name varchar(100) not null unique,
     date date not null,
-    file blob not null,
+    filePath varchar(200) not null,
     CONSTRAINT fk_album FOREIGN KEY(albumId) REFERENCES Album(id)
 );
 

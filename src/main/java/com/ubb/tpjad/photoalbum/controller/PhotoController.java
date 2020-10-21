@@ -13,7 +13,7 @@ public class PhotoController {
     @Autowired
     private PhotoService photoService;
 
-    @PostMapping("/uploadPhoto")
+    @PostMapping("/upload")
     public void uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("albumId") int albumId) {
         Photo photo = photoService.storeFile(file, albumId);
     }

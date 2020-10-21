@@ -6,10 +6,12 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class AlbumRepositoryImpl implements AlbumRepository {
@@ -29,7 +31,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     }
 
     @Override
-    public Album getAlbumById(int id) {
+    public Optional<Album> getAlbumById(int id) {
         Session session = sessionFactory.getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Album> query = cb.createQuery(Album.class);
@@ -37,6 +39,6 @@ public class AlbumRepositoryImpl implements AlbumRepository {
         Root<Album> root = query.from(Album.class);
         query.select(root).where(cb.equal(root.get("id"), id));
 
-        return session.createQuery(query).getSingleResult();
+        return session.createQuery(query).getResultList().stream().findFirst();
     }
 }

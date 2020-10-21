@@ -28,14 +28,13 @@ public class Photo {
     private Date date;
 
     @Lob
-    @Column(columnDefinition = "BLOB")
     @NonNull
-    private byte[] file;
+    private String filePath;
 
-    public Photo(@NonNull Album album, @NonNull String name, @NonNull Date date, @NonNull byte[] file) {
+    public Photo(@NonNull Album album, @NonNull String name, @NonNull Date date, @NonNull String filePath) {
         this.album = album;
         this.name = name;
         this.date = date;
-        this.file = file;
+        this.filePath = filePath;
     }
 }
