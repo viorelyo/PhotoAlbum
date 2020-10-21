@@ -7,6 +7,7 @@
 2. Change username, password under resources/application.yml
 3. resources/schema.sql contains scripts for creating db
 4. Install Lombok plugin
+5. Create folder C:\\photoAlbum (for storing uploaded photos)
 
 ## Mentions
 * Use @Slf4J on any class where you want to use logging.
