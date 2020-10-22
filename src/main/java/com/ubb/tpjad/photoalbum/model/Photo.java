@@ -1,6 +1,5 @@
 package com.ubb.tpjad.photoalbum.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -11,10 +10,9 @@ import java.sql.Date;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Photo {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
@@ -30,7 +28,13 @@ public class Photo {
     private Date date;
 
     @Lob
-    @Column(columnDefinition = "BLOB")
     @NonNull
-    private byte[] file;
+    private String filePath;
+
+    public Photo(@NonNull Album album, @NonNull String name, @NonNull Date date, @NonNull String filePath) {
+        this.album = album;
+        this.name = name;
+        this.date = date;
+        this.filePath = filePath;
+    }
 }
