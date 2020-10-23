@@ -30,4 +30,9 @@ public class PhotoController {
                         "attachment; filename=\"" + photo.getFilename() + "\"")
                 .body(photo);
     }
+
+    @DeleteMapping("/remove")
+    public void removeFile(@RequestParam("photoId") int photoId) {
+        Photo photo = photoService.removeFile(photoId);
+    }
 }

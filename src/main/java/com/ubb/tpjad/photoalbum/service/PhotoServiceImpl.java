@@ -80,4 +80,29 @@ public class PhotoServiceImpl implements PhotoService {
             throw new FileStorageException(String.format("Could not load photo: [%s].", photo.getName()), ex);
         }
     }
+
+    @Override
+    public Photo removeFile(int photoId) {
+        log.info("Removing photo");
+
+        log.info("Getting photo by id");
+        Optional<Photo> foundPhoto = photoRepository.getPhotoById(photoId);
+        if (!foundPhoto.isPresent()) {
+            log.warn("Could not find specified album with id: [{}]", photoId);
+            throw new FileStorageException("Could not find specified photo.");
+        }
+        Photo photo = foundPhoto.get();
+
+        log.info("Removing photo: [{}] from repo", photo.getName());
+        photoRepository.removePhoto(photo);
+
+        try {
+            fileUtil.remove(photo.getFilePath());
+        } catch (FileNotFoundException ex) {
+            log.warn(ex.getMessage());
+            throw new FileStorageException(String.format("Could not remove photo: [%s].", photo.getName()), ex);
+        }
+
+        return photo;
+    }
 }

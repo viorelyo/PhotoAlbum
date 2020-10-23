@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.Optional;
@@ -38,5 +39,15 @@ public class PhotoRepositoryImpl implements PhotoRepository {
         query.select(root).where(cb.equal(root.get("id"), id));
 
         return session.createQuery(query).getResultList().stream().findFirst();
+    }
+
+    @Override
+    public void removePhoto(Photo photo) {
+        Session session = sessionFactory.getCurrentSession();
+        session.beginTransaction();
+
+        session.delete(photo);
+
+        session.getTransaction().commit();
     }
 }

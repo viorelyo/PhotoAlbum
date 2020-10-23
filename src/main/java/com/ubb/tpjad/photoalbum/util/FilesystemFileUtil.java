@@ -11,10 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 
 @Component
 @Slf4j
@@ -53,6 +50,23 @@ public class FilesystemFileUtil implements FileUtil {
         } catch (MalformedURLException ex) {
             log.warn(ex.getMessage());
             throw new FileNotFoundException("Could not load file");
+        }
+    }
+
+    @Override
+    public void remove(String filePath) throws FileNotFoundException {
+        try {
+            log.info("Removing file: [{}]", filePath);
+            Path path = Paths.get(filePath);
+
+            Files.delete(path);
+            log.warn("File removed successfully");
+        } catch (NoSuchFileException ex) {
+            log.warn(ex.getMessage());
+            throw new FileNotFoundException("Could not find file");
+        } catch (IOException ex) {
+            log.warn(ex.getMessage());
+            throw new FileNotFoundException(ex.getMessage());
         }
     }
 }
