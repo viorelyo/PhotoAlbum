@@ -1,11 +1,13 @@
 package com.ubb.tpjad.photoalbum.util;
 
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
 public interface FileUtil {
     String store(InputStream fileStream, String filename) throws IOException;
-    ByteArrayResource load(String filePath);
+    Resource load(String filePath) throws FileNotFoundException;
+    void remove(String filePath) throws FileNotFoundException;
 }

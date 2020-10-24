@@ -8,10 +8,12 @@ import com.ubb.tpjad.photoalbum.repository.PhotoRepository;
 import com.ubb.tpjad.photoalbum.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.Optional;
@@ -57,5 +59,50 @@ public class PhotoServiceImpl implements PhotoService {
             log.warn(ex.getMessage());
             throw new FileStorageException(String.format("Could not store file: [%s].", filename), ex);
         }
+    }
+
+    @Override
+    public Resource loadFile(int photoId) {
+        log.info("Loading photo");
+
+        log.info("Getting photo by id");
+        Optional<Photo> foundPhoto = photoRepository.getPhotoById(photoId);
+        if (!foundPhoto.isPresent()) {
+            log.warn("Could not find specified album with id: [{}]", photoId);
+            throw new FileStorageException("Could not find specified photo.");
+        }
+        Photo photo = foundPhoto.get();
+
+        try {
+            return fileUtil.load(photo.getFilePath());
+        } catch (FileNotFoundException ex) {
+            log.warn(ex.getMessage());
+            throw new FileStorageException(String.format("Could not load photo: [%s].", photo.getName()), ex);
+        }
+    }
+
+    @Override
+    public Photo removeFile(int photoId) {
+        log.info("Removing photo");
+
+        log.info("Getting photo by id");
+        Optional<Photo> foundPhoto = photoRepository.getPhotoById(photoId);
+        if (!foundPhoto.isPresent()) {
+            log.warn("Could not find specified album with id: [{}]", photoId);
+            throw new FileStorageException("Could not find specified photo.");
+        }
+        Photo photo = foundPhoto.get();
+
+        log.info("Removing photo: [{}] from repo", photo.getName());
+        photoRepository.removePhoto(photo);
+
+        try {
+            fileUtil.remove(photo.getFilePath());
+        } catch (FileNotFoundException ex) {
+            log.warn(ex.getMessage());
+            throw new FileStorageException(String.format("Could not remove photo: [%s].", photo.getName()), ex);
+        }
+
+        return photo;
     }
 }
