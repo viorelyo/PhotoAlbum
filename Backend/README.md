@@ -11,3 +11,8 @@
 
 ## Mentions
 * Use @Slf4J on any class where you want to use logging.
+
+## Post-Migration
+1. move .idea, target folders to Backend
+2. make sure there are no leftovers in root folder
+3. reopen Backend folder in Intellij -> There should be a "VSC" error -> press on configure -> remove "/Backend" folder
