@@ -4,10 +4,9 @@ import com.ubb.tpjad.photoalbum.model.Album;
 import com.ubb.tpjad.photoalbum.service.AlbumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import sun.rmi.runtime.Log;
 
 import java.util.List;
 
@@ -22,5 +21,10 @@ public class AlbumController {
     @ResponseStatus(HttpStatus.OK)
     public List<Album> getAlbums() {
         return albumService.getAlbums();
+    }
+
+    @PostMapping("/add")
+    public void addAlbum(@RequestParam("albumName") String name) {
+        Album album = albumService.addAlbum(name);
     }
 }

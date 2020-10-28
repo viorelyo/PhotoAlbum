@@ -20,4 +20,15 @@ public class AlbumServiceImpl implements AlbumService {
         log.info("Getting all albums");
         return albumRepository.getAlbums();
     }
+
+    @Override
+    public Album addAlbum(String name) {
+        log.info("Adding album");
+
+        Album album = new Album(name);
+
+        albumRepository.save(album);
+
+        return album;
+    }
 }
