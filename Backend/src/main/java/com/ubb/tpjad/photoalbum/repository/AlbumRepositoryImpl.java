@@ -41,4 +41,16 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
         return session.createQuery(query).getResultList().stream().findFirst();
     }
+
+    @Override
+    public Album save(Album album) {
+        Session session = sessionFactory.getCurrentSession();
+        session.beginTransaction();
+
+        session.save(album);
+
+        session.getTransaction().commit();
+
+        return album;
+    }
 }

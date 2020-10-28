@@ -9,4 +9,5 @@ public interface AlbumRepository {
 
     List<Album> getAlbums();
     Optional<Album> getAlbumById(int id);
+    Album save(Album album);
 }
