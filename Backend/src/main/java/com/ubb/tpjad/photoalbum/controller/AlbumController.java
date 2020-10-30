@@ -5,12 +5,11 @@ import com.ubb.tpjad.photoalbum.service.AlbumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import sun.rmi.runtime.Log;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/albums")
 public class AlbumController {
 
