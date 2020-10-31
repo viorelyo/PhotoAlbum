@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/photos")
@@ -21,6 +23,11 @@ public class PhotoController {
     @PostMapping("/upload")
     public void uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("albumId") int albumId) {
         Photo photo = photoService.storeFile(file, albumId);
+    }
+
+    @PostMapping("/uploadMultiple")
+    public void uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("albumId") int albumId) {
+        Arrays.asList(files).forEach(file -> uploadFile(file, albumId));
     }
 
     @GetMapping("/download")
