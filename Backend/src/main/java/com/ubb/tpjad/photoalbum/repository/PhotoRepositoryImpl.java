@@ -1,15 +1,18 @@
 package com.ubb.tpjad.photoalbum.repository;
 
+import com.ubb.tpjad.photoalbum.model.Album;
 import com.ubb.tpjad.photoalbum.model.Photo;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -39,6 +42,18 @@ public class PhotoRepositoryImpl implements PhotoRepository {
         query.select(root).where(cb.equal(root.get("id"), id));
 
         return session.createQuery(query).getResultList().stream().findFirst();
+    }
+
+    @Override
+    public List<Photo> getPhotosByAlbum(Album album) {
+        Session session = sessionFactory.getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Photo> query = cb.createQuery(Photo.class);
+
+        Root<Photo> root = query.from(Photo.class);
+        query.select(root).where(cb.equal(root.get("albumId"), album.getId()));
+
+        return session.createQuery(query).getResultList();
     }
 
     @Override
