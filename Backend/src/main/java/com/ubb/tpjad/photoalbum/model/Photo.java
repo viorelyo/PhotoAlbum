@@ -18,7 +18,7 @@ public class Photo {
     @ManyToOne
     @JoinColumn(name="albumId", nullable=false)
     @NonNull
-    private Album album;
+    private Album albumId;
 
     @Column(unique = true)
     @NonNull
@@ -31,8 +31,8 @@ public class Photo {
     @NonNull
     private String filePath;
 
-    public Photo(@NonNull Album album, @NonNull String name, @NonNull Date date, @NonNull String filePath) {
-        this.album = album;
+    public Photo(@NonNull Album albumId, @NonNull String name, @NonNull Date date, @NonNull String filePath) {
+        this.albumId = albumId;
         this.name = name;
         this.date = date;
         this.filePath = filePath;

@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/photos")
@@ -35,5 +37,12 @@ public class PhotoController {
     @DeleteMapping("/remove")
     public void removeFile(@RequestParam("photoId") int photoId) {
         Photo photo = photoService.removeFile(photoId);
+    }
+
+    @GetMapping("/getphotosbyalbum")
+    @ResponseBody
+    public List<Photo> getPhotos(@RequestParam("albumId") int albumId) {
+        List<Photo> photos = photoService.getPhotosByAlbum(albumId);
+        return photos;
     }
 }
