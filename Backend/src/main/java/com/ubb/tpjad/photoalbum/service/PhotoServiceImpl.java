@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -104,5 +105,20 @@ public class PhotoServiceImpl implements PhotoService {
         }
 
         return photo;
+    }
+
+    @Override
+    public List<Photo> getPhotosByAlbum(int albumId) {
+
+        log.info("Getting photos by album");
+
+        Optional<Album> foundAlbum = albumRepository.getAlbumById(albumId);
+        if (!foundAlbum.isPresent()) {
+            log.warn("Could not find specified album with id: [{}]", albumId);
+            throw new FileStorageException("Could not find specified album.");
+        }
+        Album album = foundAlbum.get();
+
+        return photoRepository.getPhotosByAlbum(album);
     }
 }
