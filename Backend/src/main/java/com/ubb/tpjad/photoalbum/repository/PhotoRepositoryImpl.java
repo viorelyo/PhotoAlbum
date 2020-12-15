@@ -7,10 +7,9 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,6 +60,33 @@ public class PhotoRepositoryImpl implements PhotoRepository {
 
         Root<Photo> root = query.from(Photo.class);
         query.select(root).where(cb.equal(root.get("albumId"), album.getId()));
+
+        return session.createQuery(query).getResultList();
+    }
+
+    @Override
+    public List<Photo> getPhotosByAlbumFilterByDate(Album album, LocalDate from, LocalDate to) {
+        Session session = sessionFactory.getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Photo> query = cb.createQuery(Photo.class);
+
+        Root<Photo> root = query.from(Photo.class);
+        Predicate whereAlbumIdEqualsCondition = cb.equal(root.get("albumId"), album.getId());
+        Predicate dateBetweenCondition = cb.between(root.get("date"), Date.valueOf(from), Date.valueOf(to));
+        query.select(root).where(cb.and(whereAlbumIdEqualsCondition, dateBetweenCondition));
+
+        return session.createQuery(query).getResultList();
+    }
+
+    @Override
+    public List<Photo> getPhotosByAlbumSortByDate(Album album, boolean ascending) {
+        Session session = sessionFactory.getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Photo> query = cb.createQuery(Photo.class);
+
+        Root<Photo> root = query.from(Photo.class);
+        Order sortingOrder = ascending ? cb.asc(root.get("date")) : cb.desc(root.get("date"));
+        query.select(root).where(cb.equal(root.get("albumId"), album.getId())).orderBy(sortingOrder);
 
         return session.createQuery(query).getResultList();
     }
