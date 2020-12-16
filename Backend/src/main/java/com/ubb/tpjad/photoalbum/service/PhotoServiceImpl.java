@@ -1,5 +1,7 @@
 package com.ubb.tpjad.photoalbum.service;
 
+import com.ubb.tpjad.photoalbum.exception.BadRequestException;
+import com.ubb.tpjad.photoalbum.exception.EntityNotFoundException;
 import com.ubb.tpjad.photoalbum.exception.FileStorageException;
 import com.ubb.tpjad.photoalbum.model.Album;
 import com.ubb.tpjad.photoalbum.model.Photo;
@@ -16,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -104,5 +108,52 @@ public class PhotoServiceImpl implements PhotoService {
         }
 
         return photo;
+    }
+
+    @Override
+    public List<Photo> getPhotosByAlbum(int albumId) {
+
+        log.info("Getting photos by album");
+
+        Optional<Album> foundAlbum = albumRepository.getAlbumById(albumId);
+        if (!foundAlbum.isPresent()) {
+            log.warn("Could not find specified album with id: [{}]", albumId);
+            throw new EntityNotFoundException("Could not find specified album.");
+        }
+        Album album = foundAlbum.get();
+
+        return photoRepository.getPhotosByAlbum(album);
+    }
+
+    @Override
+    public List<Photo> getPhotosByAlbumFilterByDate(int albumId, LocalDate from, LocalDate to) {
+        log.info("Getting photos by album id: [{}] from: {} to: {}", albumId, from, to);
+
+        if (from.isAfter(to)) {
+            throw new BadRequestException("\"From\" date must be before \"to\" date");
+        }
+
+        Optional<Album> foundAlbum = albumRepository.getAlbumById(albumId);
+        if (!foundAlbum.isPresent()) {
+            log.warn("Could not find specified album with id: [{}]", albumId);
+            throw new EntityNotFoundException("Could not find specified album.");
+        }
+        Album album = foundAlbum.get();
+
+        return photoRepository.getPhotosByAlbumFilterByDate(album, from, to);
+    }
+
+    @Override
+    public List<Photo> getPhotosByAlbumSortByDate(int albumId, boolean ascending) {
+        log.info("Getting photos by album id: [{}] sorting by date {}", albumId, ascending ? "ascending" : "descending");
+
+        Optional<Album> foundAlbum = albumRepository.getAlbumById(albumId);
+        if (!foundAlbum.isPresent()) {
+            log.warn("Could not find specified album with id: [{}]", albumId);
+            throw new EntityNotFoundException("Could not find specified album.");
+        }
+        Album album = foundAlbum.get();
+
+        return photoRepository.getPhotosByAlbumSortByDate(album, ascending);
     }
 }
