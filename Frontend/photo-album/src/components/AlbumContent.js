@@ -3,9 +3,11 @@ import { Button, Icon, Modal, Image } from "semantic-ui-react";
 
 import { getPhotoById } from "../api/photosApi";
 
+import PhotoUploader from "./PhotoUploader";
+
 class AlbumContent extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       modalOpen: false,
       viewImage: {
@@ -48,33 +50,36 @@ class AlbumContent extends React.Component {
 
   render() {
     return (
-      <Modal
-        basic
-        onClose={() => {
-          this.handleClose();
-        }}
-        onOpen={() => {
-          this.handleOpen("test.jpg", 1);
-        }}
-        open={this.state.modalOpen}
-        size="small"
-        trigger={<Button>Basic Modal</Button>}
-      >
-        <Modal.Content image>
-          <Image src={this.state.viewImage.url} size="huge" centered />
-        </Modal.Content>
-        <Modal.Actions>
-          <Button
-            color="green"
-            inverted
-            onClick={() => {
-              this.download();
-            }}
-          >
-            <Icon name="download" /> Download
-          </Button>
-        </Modal.Actions>
-      </Modal>
+      <div>
+        <PhotoUploader />
+        <Modal
+          basic
+          onClose={() => {
+            this.handleClose();
+          }}
+          onOpen={() => {
+            this.handleOpen("test.jpg", 1);
+          }}
+          open={this.state.modalOpen}
+          size="small"
+          trigger={<Button>Basic Modal</Button>}
+        >
+          <Modal.Content image>
+            <Image src={this.state.viewImage.url} size="huge" centered />
+          </Modal.Content>
+          <Modal.Actions>
+            <Button
+              color="green"
+              inverted
+              onClick={() => {
+                this.download();
+              }}
+            >
+              <Icon name="download" /> Download
+            </Button>
+          </Modal.Actions>
+        </Modal>
+      </div>
     );
   }
 }
