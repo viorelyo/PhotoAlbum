@@ -20,6 +20,7 @@ class App extends React.Component {
 
           {/*Path to Component mapping*/}
           <Switch>
+            <Route exact path={"/"} component={Home}/>
             <Route exact path={"/albums"} component={Home}/>
             <Route exact path={"/albums/:name"} component={AlbumContent}/>
           </Switch>

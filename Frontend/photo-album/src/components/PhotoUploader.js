@@ -1,6 +1,6 @@
 import React from "react";
 import Dropzone from "react-dropzone";
-import { List, Icon, Segment } from "semantic-ui-react";
+import { Icon, Segment } from "semantic-ui-react";
 
 import { uploadPhoto } from "../api/photosApi";
 
@@ -21,7 +21,7 @@ class PhotoUploader extends React.PureComponent {
       uploadPhoto(file, albumId).then((status) => {
         //TODO can be shown on page
         if (status === 200) {
-            this.setState({ files: [...this.state.files, file] });
+          this.setState({ files: [...this.state.files, file] });
         }
       });
     });
@@ -29,7 +29,7 @@ class PhotoUploader extends React.PureComponent {
 
   render() {
     return (
-      <Dropzone onDrop={this.fileInputCallback}>
+      <Dropzone accept="image/*" onDrop={this.fileInputCallback}>
         {({ getRootProps, getInputProps }) => (
           <Segment
             inverted
