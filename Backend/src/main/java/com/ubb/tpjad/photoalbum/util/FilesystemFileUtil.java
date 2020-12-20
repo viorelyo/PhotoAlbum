@@ -21,9 +21,9 @@ public class FilesystemFileUtil implements FileUtil {
     public String uploadDir;
 
     @Override
-    public String store(InputStream fileStream, String filename) throws IOException {
+    public String store(InputStream fileStream, String dirName, String filename) throws IOException {
         try {
-            Path fileLocation = Paths.get(uploadDir + File.separator + filename);
+            Path fileLocation = Paths.get(uploadDir + File.separator + dirName + File.separator + filename);
             log.info("Storing file: [{}]", fileLocation.toString());
             Files.copy(fileStream, fileLocation, StandardCopyOption.REPLACE_EXISTING);
 
@@ -67,6 +67,26 @@ public class FilesystemFileUtil implements FileUtil {
         } catch (IOException ex) {
             log.warn(ex.getMessage());
             throw new FileNotFoundException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void createDirectory(String dirName) throws SecurityException {
+        try {
+            log.info("Creating directory: [{}]", dirName);
+            File dir = new File(uploadDir + File.separator + dirName);
+
+            if (dir.exists()) {
+                log.warn("Directory already exists");
+                throw new SecurityException("Directory already exists");
+            }
+            if (!dir.mkdirs()) {
+                log.warn("Could not create directory");
+                throw new SecurityException("Could not create directory");
+            }
+        } catch (SecurityException ex) {
+            log.warn(ex.getMessage());
+            throw ex;
         }
     }
 }

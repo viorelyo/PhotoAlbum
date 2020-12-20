@@ -46,8 +46,6 @@ public class PhotoServiceImpl implements PhotoService {
         }
 
         try {
-            String filePath = fileUtil.store(file.getInputStream(), filename);
-
             log.info("Getting album by id");
             Optional<Album> foundAlbum = albumRepository.getAlbumById(albumId);
             if (!foundAlbum.isPresent()) {
@@ -55,6 +53,8 @@ public class PhotoServiceImpl implements PhotoService {
                 throw new FileStorageException("Could not find specified album.");
             }
             Album album = foundAlbum.get();
+
+            String filePath = fileUtil.store(file.getInputStream(), album.getName(), filename);
 
             Photo photo = new Photo(album, filename, new Date(System.currentTimeMillis()), filePath);
             log.info("Saving photo: [{}] from album: [{}] to repo", photo.getName(), album.getName());
