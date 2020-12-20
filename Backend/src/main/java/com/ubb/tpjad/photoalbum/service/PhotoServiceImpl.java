@@ -9,6 +9,7 @@ import com.ubb.tpjad.photoalbum.repository.AlbumRepository;
 import com.ubb.tpjad.photoalbum.repository.PhotoRepository;
 import com.ubb.tpjad.photoalbum.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,7 @@ public class PhotoServiceImpl implements PhotoService {
 
             String filePath = fileUtil.store(file.getInputStream(), album.getName(), filename);
 
-            Photo photo = new Photo(album, filename, new Date(System.currentTimeMillis()), filePath);
+            Photo photo = new Photo(album, FilenameUtils.getName(filePath), new Date(System.currentTimeMillis()), filePath);
             log.info("Saving photo: [{}] from album: [{}] to repo", photo.getName(), album.getName());
             return photoRepository.save(photo);
         } catch (IOException ex) {
