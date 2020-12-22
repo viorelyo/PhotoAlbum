@@ -1,4 +1,6 @@
 const BASE_PATH = "http://localhost:8080/photoAlbum/photos";
+const BASE_PATH_GET_PHOTOS = "http://localhost:8080/photoAlbum/photos/getphotosbyalbum";
+const BASE_PATH_GET_BINARIES = "http://localhost:8080/photoAlbum/photos/downloadByAlbum";
 
 export const getPhotoById = (id) => {
   const url = new URL(BASE_PATH + "/download");
@@ -21,3 +23,17 @@ export const uploadPhoto = (file, albumId) => {
     body: formData,
   }).then((response) => response.status);
 };
+
+export const getAllPhotosByAlbum = (albumId) => {
+  const url = new URL(BASE_PATH_GET_PHOTOS+ "?albumId="+albumId);
+
+  return fetch(url.toString())
+    .then(response => response.json());
+}
+
+export const getAllPhotosBinariesByAlbum = (albumId) => {
+  const url = new URL(BASE_PATH_GET_BINARIES+ "?albumId="+albumId);
+
+  return fetch(url.toString())
+    .then(response => response.json());
+}
