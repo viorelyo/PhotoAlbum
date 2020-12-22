@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public interface FileUtil {
-    String store(InputStream fileStream, String filename) throws IOException;
+    String store(InputStream fileStream, String dirName, String filename) throws IOException;
     Resource load(String filePath) throws FileNotFoundException;
     void remove(String filePath) throws FileNotFoundException;
+
+    void createDirectory(String dirName) throws SecurityException;
 }
