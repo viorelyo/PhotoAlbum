@@ -7,6 +7,7 @@ import com.ubb.tpjad.photoalbum.model.Album;
 import com.ubb.tpjad.photoalbum.model.Photo;
 import com.ubb.tpjad.photoalbum.repository.AlbumRepository;
 import com.ubb.tpjad.photoalbum.repository.PhotoRepository;
+import com.ubb.tpjad.photoalbum.response.PhotoResponse;
 import com.ubb.tpjad.photoalbum.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -113,7 +114,6 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public List<Photo> getPhotosByAlbum(int albumId) {
-
         log.info("Getting photos by album");
 
         Optional<Album> foundAlbum = albumRepository.getAlbumById(albumId);
@@ -156,5 +156,18 @@ public class PhotoServiceImpl implements PhotoService {
         Album album = foundAlbum.get();
 
         return photoRepository.getPhotosByAlbumSortByDate(album, ascending);
+    }
+
+    @Override
+    public PhotoResponse getCompressedPhotoResponse(Photo photo) {
+        log.info("Creating compressed photo response from photo: [{}]", photo.getId());
+
+        try {
+            byte[] img = fileUtil.getCompressedPhotoAsByteArray(photo.getFilePath());
+            return new PhotoResponse(photo.getId(), photo.getName(), photo.getDate(), img);
+        } catch (IOException ex) {
+            log.warn(ex.getMessage());
+            throw new FileStorageException(String.format("Could not load photo: [%s].", photo.getName()), ex);
+        }
     }
 }
