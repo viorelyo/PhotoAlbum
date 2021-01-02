@@ -23,6 +23,7 @@ public class AlbumController {
     }
 
     @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
     public void addAlbum(@RequestParam("albumName") String name) {
         Album album = albumService.addAlbum(name);
     }

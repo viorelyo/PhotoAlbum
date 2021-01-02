@@ -3,6 +3,7 @@ import {getAllAlbums} from "../api/albumsApi";
 import {Container, List} from "semantic-ui-react";
 import {Link} from "react-router-dom";
 import AlbumContent from "./AlbumContent";
+import AddAlbumModal from "./AddAlbumModal";
 
 
 class Home extends React.Component {
@@ -12,10 +13,16 @@ class Home extends React.Component {
     this.state = {
       albums: []
     }
+
+    this.getAllAlbums = this.getAllAlbums.bind(this);
   }
 
   // get albums from server on page load
   componentDidMount() {
+    this.getAllAlbums();
+  }
+
+  getAllAlbums() {
     getAllAlbums().then(data => {
       if (data) {
         this.setState({albums: data})
@@ -35,6 +42,7 @@ class Home extends React.Component {
     return (
       <React.Fragment>
         <Container>
+          <AddAlbumModal refreshHandler = {this.getAllAlbums}/>
           <List divided relaxed size='big'>
             {
               this.state.albums.map(album => (

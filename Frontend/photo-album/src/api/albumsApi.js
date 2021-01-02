@@ -7,3 +7,14 @@ export const getAllAlbums = () => {
   return fetch(url.toString())
     .then(response => response.json());
 }
+
+export const addAlbum = (albumName) => {
+  const url = new URL(BASE_PATH + "/add");
+  url.search = new URLSearchParams({
+    albumName: albumName,
+  });
+
+  return fetch(url, {
+    method: "POST"
+  }).then((response) => response.status);
+};
