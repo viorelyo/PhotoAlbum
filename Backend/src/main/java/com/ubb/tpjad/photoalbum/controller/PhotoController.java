@@ -1,7 +1,6 @@
 package com.ubb.tpjad.photoalbum.controller;
 
 import com.ubb.tpjad.photoalbum.model.Photo;
-import com.ubb.tpjad.photoalbum.repository.PhotoRepository;
 import com.ubb.tpjad.photoalbum.response.PhotoResponse;
 import com.ubb.tpjad.photoalbum.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -56,28 +53,17 @@ public class PhotoController {
 
     @GetMapping("/")
     @ResponseBody
-    public ResponseEntity<List<PhotoResponse>> getPhotos(@RequestParam("albumId") int albumId) {
-        List<Photo> photos = photoService.getPhotosByAlbum(albumId);
-
-        List<PhotoResponse> response = new ArrayList<>();
-        for (Photo photo : photos) {
-            response.add(photoService.getPhotoResponse(photo));
-        }
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public List<PhotoResponse> getPhotos(@RequestParam("albumId") int albumId) {
+        return photoService.getPhotosByAlbum(albumId);
     }
 
-    @GetMapping("/filtered")
+    @GetMapping("/filterAndSort")
     @ResponseBody
-    public List<Photo> getPhotosFilterByDate(@RequestParam("albumId") int albumId,
-                                             @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-                                             @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        return photoService.getPhotosByAlbumFilterByDate(albumId, from, to);
-    }
-
-    @GetMapping("/sorted")
-    @ResponseBody
-    public List<Photo> getPhotosFilterByDate(@RequestParam("albumId") int albumId, @RequestParam("asc") boolean ascending) {
-        return photoService.getPhotosByAlbumSortByDate(albumId, ascending);
+    public List<PhotoResponse> getPhotosFilterAndSort(@RequestParam("albumId") int albumId,
+                                                      @RequestParam(name = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+                                                      @RequestParam(name = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+                                                      @RequestParam(name = "asc", required = false) Boolean ascending) {
+        return photoService.getPhotosByAlbumFilterAndSort(albumId, from, to, ascending);
     }
 }

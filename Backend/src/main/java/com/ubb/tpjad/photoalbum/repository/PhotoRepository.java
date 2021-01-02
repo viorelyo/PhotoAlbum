@@ -12,6 +12,5 @@ public interface PhotoRepository {
     Optional<Photo> getPhotoById(int id);
     void removePhoto(Photo photo);
     List<Photo> getPhotosByAlbum(Album album);
-    List<Photo> getPhotosByAlbumFilterByDate(Album album, LocalDate from, LocalDate to);
-    List<Photo> getPhotosByAlbumSortByDate(Album album, boolean ascending);
+    List<Photo> getPhotosByAlbumFilterAndSort(Album album, LocalDate from, LocalDate to, Boolean ascending);
 }

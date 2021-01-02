@@ -9,10 +9,8 @@ import com.ubb.tpjad.photoalbum.repository.AlbumRepository;
 import com.ubb.tpjad.photoalbum.repository.PhotoRepository;
 import com.ubb.tpjad.photoalbum.response.PhotoResponse;
 import com.ubb.tpjad.photoalbum.util.FileUtil;
-import com.ubb.tpjad.photoalbum.util.PhotoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.omg.CORBA.portable.InputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -21,9 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -125,7 +123,7 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public List<Photo> getPhotosByAlbum(int albumId) {
+    public List<PhotoResponse> getPhotosByAlbum(int albumId) {
         log.info("Getting photos by album");
 
         Optional<Album> foundAlbum = albumRepository.getAlbumById(albumId);
@@ -135,14 +133,15 @@ public class PhotoServiceImpl implements PhotoService {
         }
         Album album = foundAlbum.get();
 
-        return photoRepository.getPhotosByAlbum(album);
+        List<Photo> photos = photoRepository.getPhotosByAlbum(album);
+        return compressPhotos(photos);
     }
 
     @Override
-    public List<Photo> getPhotosByAlbumFilterByDate(int albumId, LocalDate from, LocalDate to) {
-        log.info("Getting photos by album id: [{}] from: {} to: {}", albumId, from, to);
+    public List<PhotoResponse> getPhotosByAlbumFilterAndSort(int albumId, LocalDate from, LocalDate to, Boolean ascending) {
+        log.info("Getting photos by album id: [{}] from: {} to: {}, sort ascending: {}", albumId, from, to, ascending);
 
-        if (from.isAfter(to)) {
+        if (from != null && to != null && from.isAfter(to)) {
             throw new BadRequestException("\"From\" date must be before \"to\" date");
         }
 
@@ -153,21 +152,17 @@ public class PhotoServiceImpl implements PhotoService {
         }
         Album album = foundAlbum.get();
 
-        return photoRepository.getPhotosByAlbumFilterByDate(album, from, to);
+        List<Photo> photos = photoRepository.getPhotosByAlbumFilterAndSort(album, from, to, ascending);
+        return compressPhotos(photos);
     }
 
     @Override
-    public List<Photo> getPhotosByAlbumSortByDate(int albumId, boolean ascending) {
-        log.info("Getting photos by album id: [{}] sorting by date {}", albumId, ascending ? "ascending" : "descending");
-
-        Optional<Album> foundAlbum = albumRepository.getAlbumById(albumId);
-        if (!foundAlbum.isPresent()) {
-            log.warn("Could not find specified album with id: [{}]", albumId);
-            throw new EntityNotFoundException("Could not find specified album.");
+    public List<PhotoResponse> compressPhotos(List<Photo> photos) {
+        List<PhotoResponse> response = new ArrayList<>();
+        for (Photo photo : photos) {
+            response.add(getPhotoResponse(photo));
         }
-        Album album = foundAlbum.get();
-
-        return photoRepository.getPhotosByAlbumSortByDate(album, ascending);
+        return response;
     }
 
     @Override

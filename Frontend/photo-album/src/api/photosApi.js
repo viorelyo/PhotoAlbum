@@ -1,6 +1,5 @@
 const BASE_PATH = "http://localhost:8080/photoAlbum/photos";
 const BASE_PATH_GET_PHOTOS = "http://localhost:8080/photoAlbum/photos/";
-const BASE_PATH_GET_BINARIES = "http://localhost:8080/photoAlbum/photos/downloadByAlbum";
 
 export const getPhotoById = (id) => {
   const url = new URL(BASE_PATH + "/download");
@@ -33,3 +32,31 @@ export const getAllPhotosByAlbum = (albumId) => {
   return fetch(url.toString())
     .then(response => response.json());
 }
+
+export const getAllPhotosByAlbumFilterAndSort = (albumId, from, to, ascending) => {
+  const url = new URL(BASE_PATH + "/filterAndSort");
+  url.search = new URLSearchParams({
+    albumId: albumId,
+  });
+  if (from !== null && to != null) {
+    url.searchParams.append("from", from);
+    url.searchParams.append("to", to);
+  }
+  if (ascending !== null) {
+    url.searchParams.append("asc", ascending);
+  }
+
+  return fetch(url.toString())
+    .then(response => response.json());
+}
+
+export const deletePhotoById = (id) => {
+  const url = new URL(BASE_PATH + "/remove");
+  url.search = new URLSearchParams({
+    photoId: id,
+  });
+
+  return fetch(url, {
+    method: "DELETE",
+  }).then((response) => response.status);
+};

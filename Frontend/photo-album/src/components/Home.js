@@ -35,9 +35,6 @@ class Home extends React.Component {
     });
   }
 
-  // onClick={this.handleClick(album.id)}
-  // as={Link} to={'/albums/' + album.name} state={this.state.albumId = album.id}
-
   render() {
     return (
       <React.Fragment>

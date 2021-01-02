@@ -12,8 +12,8 @@ public interface PhotoService {
     Photo storeFile(MultipartFile file, int albumId);
     Resource loadFile(int photoId);
     Photo removeFile(int photoId);
-    List<Photo> getPhotosByAlbum(int albumId);
-    List<Photo> getPhotosByAlbumFilterByDate(int albumId, LocalDate from, LocalDate to);
-    List<Photo> getPhotosByAlbumSortByDate(int albumId, boolean ascending);
+    List<PhotoResponse> getPhotosByAlbum(int albumId);
+    List<PhotoResponse> getPhotosByAlbumFilterAndSort(int albumId, LocalDate from, LocalDate to, Boolean ascending);
+    List<PhotoResponse> compressPhotos(List<Photo> photos);
     PhotoResponse getPhotoResponse(Photo photo);
 }
