@@ -3,7 +3,7 @@ import {BrowserRouter, Link, Route, Switch} from "react-router-dom";
 import Home from "./components/Home";
 import 'semantic-ui-css/semantic.min.css'
 import AlbumContent from "./components/AlbumContent";
-import {Menu, Segment} from "semantic-ui-react";
+import {Icon, Menu, Segment} from "semantic-ui-react";
 
 class App extends React.Component {
   render() {
@@ -12,9 +12,11 @@ class App extends React.Component {
         <BrowserRouter>
           {/*Menu header*/}
           <Segment inverted attached>
-            <Menu inverted borderless attached size='large'>
-              <Menu.Item header>Photo Album</Menu.Item>
-              <Menu.Item as={Link} to='/albums' name='home'/>
+            <Menu inverted borderless attached>
+              {/*<Menu.Item header><Icon name='photo' size='large'/></Menu.Item>*/}
+              <Menu.Item as={Link} to='/albums'>
+                <Icon name='photo' size='large'/>Home
+              </Menu.Item>
             </Menu>
           </Segment>
 

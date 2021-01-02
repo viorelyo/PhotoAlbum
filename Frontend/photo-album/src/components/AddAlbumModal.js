@@ -19,7 +19,6 @@ class AddAlbumModal extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     addAlbum(this.state.albumName).then((status) => {
-      console.log(status)
       if (status !== 201) { // http status CREATED
         this.setState({error: true, errorStatus: status});
       } else {

@@ -49,3 +49,14 @@ export const getAllPhotosByAlbumFilterAndSort = (albumId, from, to, ascending) =
   return fetch(url.toString())
     .then(response => response.json());
 }
+
+export const deletePhotoById = (id) => {
+  const url = new URL(BASE_PATH + "/remove");
+  url.search = new URLSearchParams({
+    photoId: id,
+  });
+
+  return fetch(url, {
+    method: "DELETE",
+  }).then((response) => response.status);
+};
