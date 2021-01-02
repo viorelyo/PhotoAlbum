@@ -9,8 +9,10 @@ import com.ubb.tpjad.photoalbum.repository.AlbumRepository;
 import com.ubb.tpjad.photoalbum.repository.PhotoRepository;
 import com.ubb.tpjad.photoalbum.response.PhotoResponse;
 import com.ubb.tpjad.photoalbum.util.FileUtil;
+import com.ubb.tpjad.photoalbum.util.PhotoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.omg.CORBA.portable.InputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -56,9 +59,10 @@ public class PhotoServiceImpl implements PhotoService {
             }
             Album album = foundAlbum.get();
 
+            String thumbnailPath = fileUtil.storeCompressedPhoto(file.getInputStream(), album.getName(), filename);
             String filePath = fileUtil.store(file.getInputStream(), album.getName(), filename);
 
-            Photo photo = new Photo(album, FilenameUtils.getName(filePath), new Date(System.currentTimeMillis()), filePath);
+            Photo photo = new Photo(album, FilenameUtils.getName(filePath), new Date(System.currentTimeMillis()), filePath, thumbnailPath);
             log.info("Saving photo: [{}] from album: [{}] to repo", photo.getName(), album.getName());
             return photoRepository.save(photo);
         } catch (IOException ex) {
@@ -159,11 +163,11 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public PhotoResponse getCompressedPhotoResponse(Photo photo) {
-        log.info("Creating compressed photo response from photo: [{}]", photo.getId());
+    public PhotoResponse getPhotoResponse(Photo photo) {
+        log.info("Creating photo response from photo thumbnail: [{}]", photo.getId());
 
         try {
-            byte[] img = fileUtil.getCompressedPhotoAsByteArray(photo.getFilePath());
+            byte[] img = fileUtil.loadBytes(photo.getThumbnailPath());
             return new PhotoResponse(photo.getId(), photo.getName(), photo.getDate(), img);
         } catch (IOException ex) {
             log.warn(ex.getMessage());

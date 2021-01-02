@@ -27,14 +27,17 @@ public class Photo {
     @NonNull
     private Date date;
 
-    @Lob
     @NonNull
     private String filePath;
 
-    public Photo(@NonNull Album albumId, @NonNull String name, @NonNull Date date, @NonNull String filePath) {
+    @NonNull
+    private String thumbnailPath;
+
+    public Photo(@NonNull Album albumId, @NonNull String name, @NonNull Date date, @NonNull String filePath, @NonNull String thumbnailPath) {
         this.albumId = albumId;
         this.name = name;
         this.date = date;
         this.filePath = filePath;
+        this.thumbnailPath = thumbnailPath;
     }
 }
