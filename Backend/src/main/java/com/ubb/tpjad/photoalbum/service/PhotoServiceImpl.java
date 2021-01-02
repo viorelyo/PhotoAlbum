@@ -103,15 +103,22 @@ public class PhotoServiceImpl implements PhotoService {
         }
         Photo photo = foundPhoto.get();
 
-        log.info("Removing photo: [{}] from repo", photo.getName());
-        photoRepository.removePhoto(photo);
-
         try {
             fileUtil.remove(photo.getFilePath());
         } catch (FileNotFoundException ex) {
             log.warn(ex.getMessage());
             throw new FileStorageException(String.format("Could not remove photo: [%s].", photo.getName()), ex);
         }
+
+        try {
+            fileUtil.remove(photo.getThumbnailPath());
+        } catch (FileNotFoundException ex) {
+            log.warn(ex.getMessage());
+            throw new FileStorageException(String.format("Could not remove photo thumbnail: [%s].", photo.getName()), ex);
+        }
+
+        log.info("Removing photo: [{}] from repo", photo.getName());
+        photoRepository.removePhoto(photo);
 
         return photo;
     }
