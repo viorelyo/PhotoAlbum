@@ -110,6 +110,7 @@ public class PhotoServiceImpl implements PhotoService {
             throw new FileStorageException(String.format("Could not remove photo: [%s].", photo.getName()), ex);
         }
 
+        log.info("Removing photo thumbnail");
         try {
             fileUtil.remove(photo.getThumbnailPath());
         } catch (FileNotFoundException ex) {
