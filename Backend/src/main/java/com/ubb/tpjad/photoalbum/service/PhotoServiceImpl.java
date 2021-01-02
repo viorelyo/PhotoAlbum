@@ -74,7 +74,7 @@ public class PhotoServiceImpl implements PhotoService {
         log.info("Getting photo by id");
         Optional<Photo> foundPhoto = photoRepository.getPhotoById(photoId);
         if (!foundPhoto.isPresent()) {
-            log.warn("Could not find specified album with id: [{}]", photoId);
+            log.warn("Could not find specified photo with id: [{}]", photoId);
             throw new FileStorageException("Could not find specified photo.");
         }
         Photo photo = foundPhoto.get();

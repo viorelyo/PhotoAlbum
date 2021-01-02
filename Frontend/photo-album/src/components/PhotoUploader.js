@@ -15,13 +15,14 @@ class PhotoUploader extends React.PureComponent {
   }
 
   fileInputCallback(acceptedFiles) {
-    let albumId = 1;
+    let albumId = this.props.albumId;
 
     acceptedFiles.forEach((file) => {
       uploadPhoto(file, albumId).then((status) => {
         //TODO can be shown on page
         if (status === 200) {
           this.setState({ files: [...this.state.files, file] });
+          this.props.refreshHandler();
         }
       });
     });

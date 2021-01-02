@@ -10,7 +10,7 @@ class AlbumContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      albumId: this.props.match.params.id,
+      albumId: this.props.location.state.albumId,
       photos: [],
       modalOpen: false,
       viewImage: {
@@ -18,9 +18,15 @@ class AlbumContent extends React.Component {
         url: undefined,
       },
     };
+
+    this.getAllPhotosByAlbum = this.getAllPhotosByAlbum.bind(this);
   }
 
   componentDidMount() {
+    this.getAllPhotosByAlbum();
+  }
+
+  getAllPhotosByAlbum() {
     getAllPhotosByAlbum(this.state.albumId).then((data) => {
       if (data) {
         this.setState({ photos: data });
@@ -62,7 +68,7 @@ class AlbumContent extends React.Component {
   render() {
     return (
       <div>
-      <PhotoUploader />
+      <PhotoUploader albumId={this.state.albumId} refreshHandler={this.getAllPhotosByAlbum}/>
         <div className="container-album">
         <Card.Group itemsPerRow={6}>
           {this.state.photos.map((photo) => {
@@ -75,7 +81,7 @@ class AlbumContent extends React.Component {
                     this.handleClose();
                   }}
                   onOpen={() => {
-                    this.handleOpen(photo.name, this.state.albumId);
+                    this.handleOpen(photo.name, photo.id);
                   }}
                   open={this.state.modalOpen}
                   size="small"
