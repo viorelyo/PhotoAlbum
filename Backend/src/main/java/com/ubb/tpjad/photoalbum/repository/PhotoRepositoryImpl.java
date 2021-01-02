@@ -65,28 +65,27 @@ public class PhotoRepositoryImpl implements PhotoRepository {
     }
 
     @Override
-    public List<Photo> getPhotosByAlbumFilterByDate(Album album, LocalDate from, LocalDate to) {
+    public List<Photo> getPhotosByAlbumFilterAndSort(Album album, LocalDate from, LocalDate to, Boolean ascending) {
         Session session = sessionFactory.getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Photo> query = cb.createQuery(Photo.class);
 
         Root<Photo> root = query.from(Photo.class);
-        Predicate whereAlbumIdEqualsCondition = cb.equal(root.get("albumId"), album.getId());
-        Predicate dateBetweenCondition = cb.between(root.get("date"), Date.valueOf(from), Date.valueOf(to));
-        query.select(root).where(cb.and(whereAlbumIdEqualsCondition, dateBetweenCondition));
+        Predicate whereCondition = cb.equal(root.get("albumId"), album.getId());
 
-        return session.createQuery(query).getResultList();
-    }
+        // check if filter by date parameters where passed
+        if (from != null && to != null) {
+            Predicate dateBetweenCondition = cb.between(root.get("date"), Date.valueOf(from), Date.valueOf(to));
+            whereCondition = cb.and(whereCondition, dateBetweenCondition);
+        }
 
-    @Override
-    public List<Photo> getPhotosByAlbumSortByDate(Album album, boolean ascending) {
-        Session session = sessionFactory.getCurrentSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<Photo> query = cb.createQuery(Photo.class);
+        query.select(root).where(whereCondition);
 
-        Root<Photo> root = query.from(Photo.class);
-        Order sortingOrder = ascending ? cb.asc(root.get("date")) : cb.desc(root.get("date"));
-        query.select(root).where(cb.equal(root.get("albumId"), album.getId())).orderBy(sortingOrder);
+        // check if sort by date (ascending boolean) parameter was passed
+        if (ascending != null) {
+            Order sortingOrder = ascending ? cb.asc(root.get("date")) : cb.desc(root.get("date"));
+            query.orderBy(sortingOrder);
+        }
 
         return session.createQuery(query).getResultList();
     }
