@@ -1,20 +1,31 @@
 import React from "react";
-import { Button, Icon, Modal, Image } from "semantic-ui-react";
+import { Button, Icon, Modal, Image, Card} from "semantic-ui-react";
 
 import { getPhotoById } from "../api/photosApi";
 
 import PhotoUploader from "./PhotoUploader";
+import { getAllPhotosByAlbum } from "../api/photosApi";
 
 class AlbumContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      albumId: this.props.match.params.id,
+      photos: [],
       modalOpen: false,
       viewImage: {
         name: undefined,
         url: undefined,
       },
     };
+  }
+
+  componentDidMount() {
+    getAllPhotosByAlbum(this.state.albumId).then((data) => {
+      if (data) {
+        this.setState({ photos: data });
+      }
+    });
   }
 
   handleOpen(name, id) {
@@ -51,34 +62,61 @@ class AlbumContent extends React.Component {
   render() {
     return (
       <div>
-        <PhotoUploader />
-        <Modal
-          basic
-          onClose={() => {
-            this.handleClose();
-          }}
-          onOpen={() => {
-            this.handleOpen("test.jpg", 1);
-          }}
-          open={this.state.modalOpen}
-          size="small"
-          trigger={<Button>Basic Modal</Button>}
-        >
-          <Modal.Content image>
-            <Image src={this.state.viewImage.url} size="huge" centered />
-          </Modal.Content>
-          <Modal.Actions>
-            <Button
-              color="green"
-              inverted
-              onClick={() => {
-                this.download();
-              }}
-            >
-              <Icon name="download" /> Download
-            </Button>
-          </Modal.Actions>
-        </Modal>
+      <PhotoUploader />
+        <div className="container-album">
+        <Card.Group itemsPerRow={6}>
+          {this.state.photos.map((photo) => {
+            var base64data = photo.content.toString("base64");
+            return (
+              <div>
+                <Modal
+                  basic
+                  onClose={() => {
+                    this.handleClose();
+                  }}
+                  onOpen={() => {
+                    this.handleOpen(photo.name, this.state.albumId);
+                  }}
+                  open={this.state.modalOpen}
+                  size="small"
+                  trigger={
+                    <Card>
+                      <Image
+                        src={"data:image/jpg;base64," + base64data}
+                        wrapped
+                        ui={false}
+                      />
+                      <Card.Content>
+                        <Card.Header>{photo.name}</Card.Header>
+                        <Card.Meta>{photo.date}</Card.Meta>
+                      </Card.Content>
+                    </Card>
+                  }
+                >
+                  <Modal.Content image>
+                    <Image
+                      src={this.state.viewImage.url}
+                      size="huge"
+                      centered
+                    />
+                  </Modal.Content>
+                  <Modal.Actions>
+                    <Button
+                      color="green"
+                      inverted
+                      onClick={() => {
+                        this.download();
+                      }}
+                    >
+                      <Icon name="download" /> Download
+                    </Button>
+                  </Modal.Actions>
+                </Modal>
+              </div>
+            );
+          })}
+        </Card.Group>
+      </div>
       </div>
     );
   }

@@ -16,3 +16,14 @@ code {
   padding-top: 3em;
   padding-bottom: 2em;
 }
+
+.ui.card {
+  width: 200px !important;
+  margin-bottom: 24px !important;
+  margin-right: 24px !important;
+}
+
+.container-album {
+  padding-top: 24px !important;
+  padding-left: 32px !important;
+}

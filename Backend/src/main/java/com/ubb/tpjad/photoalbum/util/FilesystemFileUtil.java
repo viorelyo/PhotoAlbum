@@ -2,11 +2,14 @@ package com.ubb.tpjad.photoalbum.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,6 +20,8 @@ import java.nio.file.*;
 @Component
 @Slf4j
 public class FilesystemFileUtil implements FileUtil {
+
+    private final int COMPRESSED_PHOTO_WIDTH = 300;
 
     @Value("${app.uploadDir}")
     public String uploadDir;
@@ -91,7 +96,22 @@ public class FilesystemFileUtil implements FileUtil {
         }
     }
 
-    public String getNewFilePath(String dirName, String filename) {
+    public byte[] getCompressedPhotoAsByteArray(String filePath) throws IOException {
+        try {
+            log.info("Loading compressed photo: [{}]", filePath);
+            BufferedImage input = ImageIO.read(new File(filePath));
+
+            log.info("Resizing photo");
+            BufferedImage output = PhotoUtil.simpleResizeImage(input, COMPRESSED_PHOTO_WIDTH);
+            log.info("Loading image into ByteArray");
+            return PhotoUtil.toByteArray(output, FilenameUtils.getExtension(filePath));
+        } catch (IOException ex) {
+            log.warn(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    private String getNewFilePath(String dirName, String filename) {
         log.info("Handling duplicate filenames");
         String filePath = dirName + File.separator + filename;
         File file = new File(filePath);

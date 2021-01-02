@@ -1,16 +1,20 @@
 package com.ubb.tpjad.photoalbum.controller;
 
 import com.ubb.tpjad.photoalbum.model.Photo;
+import com.ubb.tpjad.photoalbum.repository.PhotoRepository;
+import com.ubb.tpjad.photoalbum.response.PhotoResponse;
 import com.ubb.tpjad.photoalbum.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import java.time.LocalDate;
@@ -50,11 +54,17 @@ public class PhotoController {
         Photo photo = photoService.removeFile(photoId);
     }
 
-    @GetMapping("/getphotosbyalbum")
+    @GetMapping("/")
     @ResponseBody
-    public List<Photo> getPhotos(@RequestParam("albumId") int albumId) {
+    public ResponseEntity<List<PhotoResponse>> getPhotos(@RequestParam("albumId") int albumId) {
         List<Photo> photos = photoService.getPhotosByAlbum(albumId);
-        return photos;
+
+        List<PhotoResponse> response = new ArrayList<>();
+        for (Photo photo : photos) {
+            response.add(photoService.getCompressedPhotoResponse(photo));
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/filtered")

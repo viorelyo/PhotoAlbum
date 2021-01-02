@@ -1,6 +1,7 @@
 package com.ubb.tpjad.photoalbum.service;
 
 import com.ubb.tpjad.photoalbum.model.Photo;
+import com.ubb.tpjad.photoalbum.response.PhotoResponse;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,4 +15,5 @@ public interface PhotoService {
     List<Photo> getPhotosByAlbum(int albumId);
     List<Photo> getPhotosByAlbumFilterByDate(int albumId, LocalDate from, LocalDate to);
     List<Photo> getPhotosByAlbumSortByDate(int albumId, boolean ascending);
+    PhotoResponse getCompressedPhotoResponse(Photo photo);
 }

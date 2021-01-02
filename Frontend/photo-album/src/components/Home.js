@@ -2,6 +2,8 @@ import React from "react";
 import {getAllAlbums} from "../api/albumsApi";
 import {Container, List} from "semantic-ui-react";
 import {Link} from "react-router-dom";
+import AlbumContent from "./AlbumContent";
+
 
 class Home extends React.Component {
   constructor(props) {
@@ -21,6 +23,14 @@ class Home extends React.Component {
     })
   }
 
+  handleClick(albumId){
+    this.setState({
+      albumId: albumId
+    });
+  }
+  // onClick={this.handleClick(album.id)}
+  // as={Link} to={'/albums/' + album.name} state={this.state.albumId = album.id}
+
   render() {
     return (
       <React.Fragment>
@@ -28,10 +38,10 @@ class Home extends React.Component {
           <List divided relaxed size='big'>
             {
               this.state.albums.map(album => (
-                <List.Item key={album.id} as={Link} to={'/albums/' + album.name}>
+                <List.Item key={album.id} as={Link} to={'/albums/' + album.id} value={album.id}>
                   <List.Icon name='folder' size='large'/>
                   <List.Content>
-                    <List.Header>{album.name}</List.Header>
+                    <List.Header onClick={this.handleClick.bind(this,album.id)} >{album.name}</List.Header>
                   </List.Content>
                 </List.Item>
               ))

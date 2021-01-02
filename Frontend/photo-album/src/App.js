@@ -22,7 +22,7 @@ class App extends React.Component {
           <Switch>
             <Route exact path={"/"} component={Home}/>
             <Route exact path={"/albums"} component={Home}/>
-            <Route exact path={"/albums/:name"} component={AlbumContent}/>
+            <Route exact path={"/albums/:id"} component={AlbumContent}/>
           </Switch>
         </BrowserRouter>
       </React.Fragment>
