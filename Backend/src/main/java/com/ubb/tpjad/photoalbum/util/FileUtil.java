@@ -9,8 +9,9 @@ import java.io.InputStream;
 public interface FileUtil {
     String store(InputStream fileStream, String dirName, String filename) throws IOException;
     Resource load(String filePath) throws FileNotFoundException;
+    byte[] loadBytes(String filePath) throws FileNotFoundException;
     void remove(String filePath) throws FileNotFoundException;
-    byte[] getCompressedPhotoAsByteArray(String filePath) throws IOException;
+    String storeCompressedPhoto(InputStream fileStream, String dirName, String filename) throws IOException;
 
     void createDirectory(String dirName) throws SecurityException;
 }

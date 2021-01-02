@@ -2,14 +2,12 @@ package com.ubb.tpjad.photoalbum.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,6 +20,7 @@ import java.nio.file.*;
 public class FilesystemFileUtil implements FileUtil {
 
     private final int COMPRESSED_PHOTO_WIDTH = 300;
+    private final String THUMBNAIL_PREFIX_FILENAME = "thumbnail_";
 
     @Value("${app.uploadDir}")
     public String uploadDir;
@@ -54,6 +53,19 @@ public class FilesystemFileUtil implements FileUtil {
                 throw new FileNotFoundException("Could not find file");
             }
         } catch (MalformedURLException ex) {
+            log.warn(ex.getMessage());
+            throw new FileNotFoundException("Could not load file");
+        }
+    }
+
+    @Override
+    public byte[] loadBytes(String filePath) throws FileNotFoundException {
+        try {
+            log.info("Loading file: [{}]", filePath);
+            Path file = Paths.get(filePath);
+
+            return Files.readAllBytes(file);
+        } catch (IOException ex) {
             log.warn(ex.getMessage());
             throw new FileNotFoundException("Could not load file");
         }
@@ -96,19 +108,17 @@ public class FilesystemFileUtil implements FileUtil {
         }
     }
 
-    public byte[] getCompressedPhotoAsByteArray(String filePath) throws IOException {
+    public String storeCompressedPhoto(InputStream fileStream, String dirName, String filename) throws IOException {
+        Path fileLocation = Paths.get(getNewFilePath(uploadDir + File.separator + dirName, THUMBNAIL_PREFIX_FILENAME + filename));
+        log.info("Storing compressed photo: [{}]", fileLocation.toString());
         try {
-            log.info("Loading compressed photo: [{}]", filePath);
-            BufferedImage input = ImageIO.read(new File(filePath));
-
-            log.info("Resizing photo");
-            BufferedImage output = PhotoUtil.simpleResizeImage(input, COMPRESSED_PHOTO_WIDTH);
-            log.info("Loading image into ByteArray");
-            return PhotoUtil.toByteArray(output, FilenameUtils.getExtension(filePath));
+            InputStream thumbnailImageStream = PhotoUtil.simpleResizeImage(ImageIO.read(fileStream), COMPRESSED_PHOTO_WIDTH, FilenameUtils.getExtension(filename));
+            Files.copy(thumbnailImageStream, fileLocation, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ex) {
-            log.warn(ex.getMessage());
+            log.error("Could not compress photo. ", ex.getMessage());
             throw ex;
         }
+        return fileLocation.toString();
     }
 
     private String getNewFilePath(String dirName, String filename) {
@@ -118,7 +128,7 @@ public class FilesystemFileUtil implements FileUtil {
         int fileNr = 0;
         String newFilePath = "";
         if (file.exists() && !file.isDirectory()) {
-            while(file.exists()){
+            while (file.exists()) {
                 fileNr++;
                 newFilePath = dirName + File.separator + FilenameUtils.removeExtension(filename) + "(" + fileNr + ")." + FilenameUtils.getExtension(filename);
                 file = new File(newFilePath);

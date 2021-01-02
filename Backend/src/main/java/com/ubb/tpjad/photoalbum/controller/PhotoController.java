@@ -61,7 +61,7 @@ public class PhotoController {
 
         List<PhotoResponse> response = new ArrayList<>();
         for (Photo photo : photos) {
-            response.add(photoService.getCompressedPhotoResponse(photo));
+            response.add(photoService.getPhotoResponse(photo));
         }
 
         return new ResponseEntity<>(response, HttpStatus.OK);
