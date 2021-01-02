@@ -109,21 +109,16 @@ public class FilesystemFileUtil implements FileUtil {
     }
 
     public String storeCompressedPhoto(InputStream fileStream, String dirName, String filename) throws IOException {
+        Path fileLocation = Paths.get(getNewFilePath(uploadDir + File.separator + dirName, THUMBNAIL_PREFIX_FILENAME + filename));
+        log.info("Storing compressed photo: [{}]", fileLocation.toString());
         try {
-            Path fileLocation = Paths.get(getNewFilePath(uploadDir + File.separator + dirName, THUMBNAIL_PREFIX_FILENAME + filename));
-            log.info("Storing compressed photo: [{}]", fileLocation.toString());
-            try {
-                InputStream thumbnailImageStream = PhotoUtil.simpleResizeImage(ImageIO.read(fileStream), COMPRESSED_PHOTO_WIDTH, FilenameUtils.getExtension(filename));
-                Files.copy(thumbnailImageStream, fileLocation, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException ex) {
-                log.error("Could not compress photo. ", ex.getMessage());
-                throw ex;
-            }
-            return fileLocation.toString();
+            InputStream thumbnailImageStream = PhotoUtil.simpleResizeImage(ImageIO.read(fileStream), COMPRESSED_PHOTO_WIDTH, FilenameUtils.getExtension(filename));
+            Files.copy(thumbnailImageStream, fileLocation, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ex) {
-            log.warn(ex.getMessage());
+            log.error("Could not compress photo. ", ex.getMessage());
             throw ex;
         }
+        return fileLocation.toString();
     }
 
     private String getNewFilePath(String dirName, String filename) {
@@ -133,7 +128,7 @@ public class FilesystemFileUtil implements FileUtil {
         int fileNr = 0;
         String newFilePath = "";
         if (file.exists() && !file.isDirectory()) {
-            while(file.exists()){
+            while (file.exists()) {
                 fileNr++;
                 newFilePath = dirName + File.separator + FilenameUtils.removeExtension(filename) + "(" + fileNr + ")." + FilenameUtils.getExtension(filename);
                 file = new File(newFilePath);
