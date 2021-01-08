@@ -10,7 +10,7 @@ class AlbumContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      albumId: this.props.location.state.albumId,
+      albumId: this.props.location.state ? this.props.location.state.albumId : null,
       photos: [],
       modalOpen: false,
       viewImage: {
@@ -29,11 +29,13 @@ class AlbumContent extends React.Component {
   }
 
   getAllPhotosByAlbum() {
-    getAllPhotosByAlbum(this.state.albumId).then((data) => {
-      if (data) {
-        this.setState({photos: data});
-      }
-    });
+    if (this.state.albumId !== null) {
+      getAllPhotosByAlbum(this.state.albumId).then((data) => {
+        if (data) {
+          this.setState({photos: data});
+        }
+      });
+    }
   }
 
   getAllPhotosByAlbumFilterAndSort(from, to, ascending) {
@@ -87,6 +89,7 @@ class AlbumContent extends React.Component {
 
   render() {
     return (
+      this.state.albumId !== null &&
       <div>
         <PhotoUploader albumId={this.state.albumId} refreshHandler={this.getAllPhotosByAlbum}/>
         <FilterAndSortModal albumId={this.state.albumId} refreshHandler={this.getAllPhotosByAlbumFilterAndSort}
