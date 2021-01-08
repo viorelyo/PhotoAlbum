@@ -14,6 +14,6 @@ public interface PhotoService {
     Photo removeFile(int photoId);
     List<PhotoResponse> getPhotosByAlbum(int albumId);
     List<PhotoResponse> getPhotosByAlbumFilterAndSort(int albumId, LocalDate from, LocalDate to, Boolean ascending);
-    List<PhotoResponse> compressPhotos(List<Photo> photos);
+    List<PhotoResponse> getCompressedPhotos(List<Photo> photos);
     PhotoResponse getPhotoResponse(Photo photo);
 }
