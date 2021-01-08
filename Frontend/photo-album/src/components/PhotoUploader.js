@@ -48,7 +48,7 @@ class PhotoUploader extends React.PureComponent {
   render() {
     return (
       <React.Fragment>
-        <Dropzone onDrop={this.fileInputCallback}>
+        <Dropzone accept="image/*" onDrop={this.fileInputCallback}>
           {({getRootProps, getInputProps}) => (
             <Segment
               inverted
