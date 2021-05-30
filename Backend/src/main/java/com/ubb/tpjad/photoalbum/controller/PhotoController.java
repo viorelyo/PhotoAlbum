@@ -30,11 +30,6 @@ public class PhotoController {
         Photo photo = photoService.storeFile(file, albumId);
     }
 
-    @PostMapping("/uploadMultiple")
-    public void uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("albumId") int albumId) {
-        Arrays.asList(files).forEach(file -> uploadFile(file, albumId));
-    }
-
     @GetMapping("/download")
     @ResponseBody
     public ResponseEntity<Resource> downloadFile(@RequestParam("photoId") int photoId) {

@@ -30,8 +30,7 @@ public class AlbumServiceImpl implements AlbumService {
     public Album addAlbum(String name) {
         log.info("Adding album");
 
-        // TODO check for other vulnerabilities (Windows paths related maybe)
-        if (name.contains("..") || name.startsWith(".") || name.startsWith("/")) {
+        if (name.contains("..") || name.contains("/") || name.contains("\\") || name.startsWith(".")) {
             log.warn(String.format("Album name contains illegal characters: [%s]", name));
             throw new FileStorageException(String.format("Invalid album name: [%s].", name));
         }

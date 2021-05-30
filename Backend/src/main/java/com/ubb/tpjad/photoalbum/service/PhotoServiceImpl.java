@@ -42,8 +42,8 @@ public class PhotoServiceImpl implements PhotoService {
     public Photo storeFile(MultipartFile file, int albumId) {
         log.info("Storing photo");
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
-        // TODO check for other vulnerabilities
-        if (filename.contains("..")) {
+
+        if (filename.contains("..") || filename.contains("/") || filename.contains("\\") || filename.startsWith(".")) {
             log.warn(String.format("Filename contains illegal characters: [%s]", filename));
             throw new FileStorageException(String.format("Invalid path: [%s].", filename));
         }
@@ -134,7 +134,7 @@ public class PhotoServiceImpl implements PhotoService {
         Album album = foundAlbum.get();
 
         List<Photo> photos = photoRepository.getPhotosByAlbum(album);
-        return compressPhotos(photos);
+        return getCompressedPhotos(photos);
     }
 
     @Override
@@ -153,11 +153,11 @@ public class PhotoServiceImpl implements PhotoService {
         Album album = foundAlbum.get();
 
         List<Photo> photos = photoRepository.getPhotosByAlbumFilterAndSort(album, from, to, ascending);
-        return compressPhotos(photos);
+        return getCompressedPhotos(photos);
     }
 
     @Override
-    public List<PhotoResponse> compressPhotos(List<Photo> photos) {
+    public List<PhotoResponse> getCompressedPhotos(List<Photo> photos) {
         List<PhotoResponse> response = new ArrayList<>();
         for (Photo photo : photos) {
             response.add(getPhotoResponse(photo));
